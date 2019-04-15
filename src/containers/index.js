@@ -1,5 +1,6 @@
 export { default as AboutPage } from './AboutPage/AboutPage';
 export { default as FAQsPage } from './FAQsPage/FAQsPage';
+export { default as WhyJoinPage } from './WhyJoinPage/WhyJoinPage';
 export { default as AuthenticationPage } from './AuthenticationPage/AuthenticationPage';
 export { default as CheckoutPage } from './CheckoutPage/CheckoutPage';
 export { default as ContactDetailsPage } from './ContactDetailsPage/ContactDetailsPage';
