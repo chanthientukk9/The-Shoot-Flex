@@ -181,9 +181,10 @@ export class BookingDatesFormComponent extends Component {
                   id={
                     isOwnListing
                       ? 'BookingDatesForm.ownListing'
-                      : 'BookingDatesForm.youWontBeChargedInfo'
+                      : 'BookingDatesForm.ContactPhotographerFirst'
                   }
                 />
+                <FormattedMessage id='BookingDatesForm.youWontBeChargedInfo' />
               </p>
               <div className={submitButtonClasses}>
                 <PrimaryButton type="submit">

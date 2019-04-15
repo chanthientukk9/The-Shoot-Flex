@@ -2,6 +2,7 @@ import React from 'react';
 import {
   AboutPage,
   FAQsPage,
+  WhyJoinPage,
   AuthenticationPage,
   CheckoutPage,
   ContactDetailsPage,
@@ -60,6 +61,11 @@ const routeConfiguration = () => {
       path: '/FAQ',
       name: 'FAQsPage',
       component: FAQsPage,
+    },
+    {
+      path: '/WhyJoin',
+      name: 'WhyJoinPage',
+      component: WhyJoinPage,
     },
     {
       path: '/s',
