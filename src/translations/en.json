@@ -143,6 +143,7 @@
   "EditListingAvailabilityForm.blockedDay": "Not available",
   "EditListingAvailabilityForm.bookedDay": "Booked",
   "EditListingAvailabilityForm.updateFailed": "Failed to update listing. Please try again.",
+  "EditListingAvailabilityForm.availableDay": "Available",
   "EditListingAvailabilityPanel.title": "Edit the availability of {listingTitle}",
   "EditListingAvailabilityPanel.createListingTitle": "When are you available?",
   "EditListingDescriptionForm.categoryLabel": "Type of media",
