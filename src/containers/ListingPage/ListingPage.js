@@ -51,6 +51,7 @@ import SectionHostMaybe from './SectionHostMaybe';
 import SectionRulesMaybe from './SectionRulesMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import css from './ListingPage.css';
+import SectionNormalAvailabilityMaybe from './SectionNormalAvailabilityMaybe';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
 
@@ -179,6 +180,8 @@ export class ListingPageComponent extends Component {
       fetchTimeSlotsError,
       categoriesConfig,
       amenitiesConfig,
+      weekdaysConfig,
+      weekendsConfig
     } = this.props;
 
     const listingId = new UUID(rawParams.id);
@@ -418,6 +421,11 @@ export class ListingPageComponent extends Component {
                   <SectionDescriptionMaybe description={description} />
                   <SectionFeaturesMaybe options={amenitiesConfig} publicData={publicData} />
                   <SectionRulesMaybe publicData={publicData} />
+                  <SectionNormalAvailabilityMaybe
+                    intl={intl} 
+                    weekendOptions={weekendsConfig}
+                    weekdayOptions={weekdaysConfig} 
+                    publicData={publicData} />
                   <SectionMapMaybe
                     geolocation={geolocation}
                     publicData={publicData}
@@ -475,6 +483,8 @@ ListingPageComponent.defaultProps = {
   sendEnquiryError: null,
   categoriesConfig: config.custom.categories,
   amenitiesConfig: config.custom.amenities,
+  weekdaysConfig: config.custom.weekdaysAvailability,
+  weekendsConfig: config.custom.weekendsAvailability,
 };
 
 ListingPageComponent.propTypes = {

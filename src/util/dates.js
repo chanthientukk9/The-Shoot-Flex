@@ -26,6 +26,37 @@ export const isDate = d =>
  */
 export const isSameDate = (a, b) => a && isDate(a) && b && isDate(b) && a.getTime() === b.getTime();
 
+
+/**
+ * Convert date given by API to something meaningful noon on browser's timezone
+ * So, what happens is that date given by client
+ * ("Fri Mar 30 2018 12:00:00 GMT-1100 (SST)" aka "Fri Mar 30 2018 23:00:00 GMT+0000 (UTC)")
+ * will be read as UTC time. Then API normalizes night/day bookings to
+ * start from 00:00 UTC (i.e. discards hours from UTC day).
+ * So Api gives 00:00 UTC which (in our example) would be locally
+ * "Thu Mar 29 2018 13:00:00 GMT-1100 (SST)".
+ *
+ * The resulting timestamp from API is:
+ * localTimestamp.subtract(12h).add(timezoneoffset) (in eg. -23 h)
+ *
+ * So, this function adds those removed hours back.
+ *
+ * @param {Date} date is a local date object
+ *
+ * @returns {Date} date (given by API as UTC 00:00).
+ */
+export const dateFromAPIToLocal = date => {
+  const timezoneDiffInMinutes = moment(date).utcOffset();
+  // Example timezone SST:
+  // We get a Fri 00:00 UTC aka "Thu Mar 29 2018 13:00:00 GMT-1100 (SST)"
+  // We need to subtract timezone difference (-11h), effectively adding 11h - to get to correct date
+  const momentInLocalTimezone = moment(date).subtract(timezoneDiffInMinutes, 'minutes');
+  // To be on the safe zone with leap seconds and stuff when using day / night picker
+  // we'll add 12 h to get to the noon of day in local timezone.
+  return momentInLocalTimezone.toDate();
+};
+
+
 /**
  * Convert date given by API to something meaningful noon on browser's timezone
  * So, what happens is that date given by client

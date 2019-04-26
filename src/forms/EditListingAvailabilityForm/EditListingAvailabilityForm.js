@@ -5,10 +5,12 @@ import { Form as FinalForm } from 'react-final-form';
 import { intlShape, injectIntl, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { propTypes } from '../../util/types';
-import { Form, Button } from '../../components';
+import { Form, Button, FieldSelect } from '../../components';
+import config from '../../config';
 
 import ManageAvailabilityCalendar from './ManageAvailabilityCalendar';
 import css from './EditListingAvailabilityForm.css';
+import { required } from '../../util/validators';
 
 export class EditListingAvailabilityFormComponent extends Component {
   render() {
@@ -21,7 +23,7 @@ export class EditListingAvailabilityFormComponent extends Component {
             rootClassName,
             disabled,
             handleSubmit,
-            //intl,
+            intl,
             invalid,
             pristine,
             saveActionMsg,
@@ -39,6 +41,34 @@ export class EditListingAvailabilityFormComponent extends Component {
             </p>
           ) : null;
 
+          const weekdaysLabel = intl.formatMessage({
+            id: 'EditListingAvailabilityForm.weekdaysLabel',
+          });
+
+          const weekendsLabel = intl.formatMessage({
+            id: 'EditListingAvailabilityForm.weekendsLabel',
+          });
+
+          const weekdaysHelpText = intl.formatMessage({
+            id: 'EditListingAvailabilityForm.weekdaysHelpText',
+          });
+
+          const weekendsHelpText = intl.formatMessage({
+            id: 'EditListingAvailabilityForm.weekendsHelpText',
+          });
+
+          const weekendsRequired = required(
+            intl.formatMessage({
+              id: 'EditListingDescriptionForm.weekendsRequired',
+            })
+          );
+
+          const weekdaysRequired = required(
+            intl.formatMessage({
+              id: 'EditListingDescriptionForm.weekdaysRequired',
+            })
+          );
+
           const classes = classNames(rootClassName || css.root, className);
           const submitReady = updated && pristine;
           const submitInProgress = updateInProgress;
@@ -47,6 +77,41 @@ export class EditListingAvailabilityFormComponent extends Component {
           return (
             <Form className={classes} onSubmit={handleSubmit}>
               {errorMessage}
+
+              <FieldSelect
+                className={css.selectAvailability}
+                name={"weekdaysAvailability"}
+                id={"weekdaysAvailability"}
+                label={weekdaysLabel}
+                validate={weekdaysRequired}
+              >
+                <option disabled value="">
+                  {weekdaysHelpText}
+                </option>
+                {config.custom.weekdaysAvailability.map(c => (
+                  <option key={c.key} value={c.key}>
+                    {c.label}
+                  </option>
+                ))}
+              </FieldSelect>
+
+              <FieldSelect
+                className={css.selectAvailability}
+                name={"weekendsAvailability"}
+                id={"weekendsAvailability"}
+                label={weekendsLabel}
+                validate={weekendsRequired}
+              >
+                <option disabled value="">
+                  {weekendsHelpText}
+                </option>
+                {config.custom.weekdaysAvailability.map(c => (
+                  <option key={c.key} value={c.key}>
+                    {c.label}
+                  </option>
+                ))}
+              </FieldSelect>
+
               <div className={css.calendarWrapper}>
                 <ManageAvailabilityCalendar
                   availability={availability}

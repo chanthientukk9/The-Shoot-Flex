@@ -2,17 +2,25 @@ import moment from 'moment';
 import { isSameDay, isInclusivelyAfterDay, isInclusivelyBeforeDay } from 'react-dates';
 
 import { ensureTimeSlot } from '../../util/data';
-import { START_DATE, END_DATE, dateFromAPIToLocalNoon } from '../../util/dates';
-import { LINE_ITEM_DAY, LINE_ITEM_NIGHT, TIME_SLOT_DAY } from '../../util/types';
+import { START_DATE, END_DATE, dateFromAPIToLocalNoon, dateFromAPIToLocal } from '../../util/dates';
+import { LINE_ITEM_DAY, LINE_ITEM_NIGHT, TIME_SLOT_DAY, TIME_SLOT_TIME } from '../../util/types';
 import config from '../../config';
 
 // Checks if time slot (propTypes.timeSlot) start time equals a day (moment)
 const timeSlotEqualsDay = (timeSlot, day) => {
-  if (ensureTimeSlot(timeSlot).attributes.type === TIME_SLOT_DAY) {
+  const currentTimeslot = ensureTimeSlot(timeSlot);
+  if (currentTimeslot.attributes.type === TIME_SLOT_DAY) {
     // Time slots describe available dates by providing a start and
     // an end date which is the following day. In the single date picker
     // the start date is used to represent available dates.
     const localStartDate = dateFromAPIToLocalNoon(timeSlot.attributes.start);
+
+    return isSameDay(day, moment(localStartDate));
+  } else if (currentTimeslot.attributes.type === TIME_SLOT_TIME) {
+     // Time slots describe available dates by providing a start and
+    // an end date which is the following day. In the single date picker
+    // the start date is used to represent available dates.
+    const localStartDate = dateFromAPIToLocal(timeSlot.attributes.start);
 
     return isSameDay(day, moment(localStartDate));
   } else {

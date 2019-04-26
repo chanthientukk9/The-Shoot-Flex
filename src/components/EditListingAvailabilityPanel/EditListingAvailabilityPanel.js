@@ -27,18 +27,20 @@ const EditListingAvailabilityPanel = props => {
   const currentListing = ensureOwnListing(listing);
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const defaultAvailabilityPlan = {
-    type: 'availability-plan/day',
+    type: 'availability-plan/time',
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     entries: [
-      { dayOfWeek: 'mon', seats: 1 },
-      { dayOfWeek: 'tue', seats: 1 },
-      { dayOfWeek: 'wed', seats: 1 },
-      { dayOfWeek: 'thu', seats: 1 },
-      { dayOfWeek: 'fri', seats: 1 },
-      { dayOfWeek: 'sat', seats: 1 },
-      { dayOfWeek: 'sun', seats: 1 },
+      { dayOfWeek: 'mon', seats: 1, startTime: '00:00', endTime: '23:55' },
+      { dayOfWeek: 'tue', seats: 1, startTime: '00:00', endTime: '23:55' },
+      { dayOfWeek: 'wed', seats: 1, startTime: '00:00', endTime: '23:55' },
+      { dayOfWeek: 'thu', seats: 1, startTime: '00:00', endTime: '23:55' },
+      { dayOfWeek: 'fri', seats: 1, startTime: '00:00', endTime: '23:55' },
+      { dayOfWeek: 'sat', seats: 1, startTime: '00:00', endTime: '23:55' },
+      { dayOfWeek: 'sun', seats: 1, startTime: '00:00', endTime: '23:55' },
     ],
   };
   const availabilityPlan = currentListing.attributes.availabilityPlan || defaultAvailabilityPlan;
+  const { publicData } = currentListing.attributes;
 
   return (
     <div className={classes}>
@@ -55,15 +57,23 @@ const EditListingAvailabilityPanel = props => {
       <EditListingAvailabilityForm
         className={css.form}
         listingId={currentListing.id}
-        initialValues={{ availabilityPlan }}
+        initialValues={{ 
+          availabilityPlan,  
+          weekdaysAvailability: publicData.weekdaysAvailability,
+          weekendsAvailability: publicData.weekendsAvailability
+        }}
         availability={availability}
         availabilityPlan={availabilityPlan}
-        onSubmit={() => {
+        onSubmit={values => {
+          const { weekdaysAvailability, weekendsAvailability } = values;
           // We save the default availability plan
           // I.e. this listing is available every night.
           // Exceptions are handled with live edit through a calendar,
           // which is visible on this panel.
-          onSubmit({ availabilityPlan });
+          onSubmit({ availabilityPlan, publicData: {
+            weekdaysAvailability: weekdaysAvailability,
+            weekendsAvailability: weekendsAvailability
+          } });
         }}
         onChange={onChange}
         saveActionMsg={submitButtonText}

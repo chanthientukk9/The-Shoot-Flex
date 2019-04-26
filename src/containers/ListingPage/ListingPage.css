@@ -584,3 +584,11 @@
   word-break: break-word;
   hyphens: auto;
 }
+
+.lighterFont {
+  font-weight: lighter;
+}
+
+.boldFont {
+  font-weight: bold;
+}

@@ -36,6 +36,20 @@ export const categories = [
   { key: 'other', label: 'Other' },
 ];
 
+export const weekdaysAvailability = [
+  { key: 'daytime', label: 'Daytime only' },
+  { key: 'evening', label: 'Evenings only' },
+  { key: 'daytime_evening', label: 'Daytime and evenings' },
+  { key: 'unavailable', label: 'Unavailable' },
+];
+
+export const weekendsAvailability = [
+  { key: 'daytime', label: 'Daytime only' },
+  { key: 'evening', label: 'Evenings only' },
+  { key: 'daytime_evening', label: 'Daytime and evenings' },
+  { key: 'unavailable', label: 'Unavailable' },
+];
+
 // Price filter configuration
 // Note: unlike most prices this is not handled in subunits
 export const priceFilterConfig = {
