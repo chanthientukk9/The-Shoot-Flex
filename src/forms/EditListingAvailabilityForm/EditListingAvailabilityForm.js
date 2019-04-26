@@ -59,13 +59,13 @@ export class EditListingAvailabilityFormComponent extends Component {
 
           const weekendsRequired = required(
             intl.formatMessage({
-              id: 'EditListingDescriptionForm.weekendsRequired',
+              id: 'EditListingAvailabilityForm.weekendsRequired',
             })
           );
 
           const weekdaysRequired = required(
             intl.formatMessage({
-              id: 'EditListingDescriptionForm.weekdaysRequired',
+              id: 'EditListingAvailabilityForm.weekdaysRequired',
             })
           );
 
