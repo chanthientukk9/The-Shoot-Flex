@@ -10,8 +10,12 @@ const SectionNormalAvailabilityMaybe = props => {
     return null;
   }
 
-  const weekendSelectedOptions = publicData && publicData.weekendsAvailability ? publicData.weekendsAvailability : [];
-  const weekdaySelectedOptions = publicData && publicData.weekdaysAvailability ? publicData.weekdaysAvailability : [];
+  if (!publicData.weekendsAvailability && !publicData.weekdaysAvailability) {
+    return null;
+  }
+
+  const weekendSelectedOptions = publicData.weekendsAvailability ? publicData.weekendsAvailability : [];
+  const weekdaySelectedOptions = publicData.weekdaysAvailability ? publicData.weekdaysAvailability : [];
 
   const weekendsName = weekendOptions.filter(option => {
     return option.key === weekendSelectedOptions;
@@ -32,8 +36,20 @@ const SectionNormalAvailabilityMaybe = props => {
       <h2 className={css.featuresTitle}>
         <FormattedMessage id="ListingPage.normalAvailabilityTitle" />
       </h2>
-      <p className={css.boldFont}>{`${weekdayLabel}`} <span className={css.lighterFont}>{`${weekdaysName[0].label}`}</span></p>
-      <p className={css.boldFont}>{`${weekendLabel}`} <span className={css.lighterFont}>{`${weekendsName[0].label}`}</span></p>
+      {
+        weekdaysName[0]
+        ?
+          (<p className={css.boldFont}>{`${weekdayLabel}`} <span className={css.lighterFont}>{`${weekdaysName[0].label}`}</span></p>)
+        :
+          null
+      }
+      {
+        weekendsName[0]
+        ?
+          (<p className={css.boldFont}>{`${weekendLabel}`} <span className={css.lighterFont}>{`${weekendsName[0].label}`}</span></p>)
+        :
+          null
+      }
     </div>
   );
 };
