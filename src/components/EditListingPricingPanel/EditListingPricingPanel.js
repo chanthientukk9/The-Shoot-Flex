@@ -40,12 +40,22 @@ const EditListingPricingPanel = props => {
     <FormattedMessage id="EditListingPricingPanel.createListingTitle" />
   );
 
+  const { publicData } = currentListing.attributes;
+
   const priceCurrencyValid = price instanceof Money ? price.currency === config.currency : true;
   const form = priceCurrencyValid ? (
     <EditListingPricingForm
       className={css.form}
-      initialValues={{ price }}
-      onSubmit={onSubmit}
+      initialValues={{ price, minimumBookingDuration: publicData.minimumBookingDuration }}
+      onSubmit={values => {
+        const { price, minimumBookingDuration } = values;
+
+        const updatedValues = {
+          price,
+          publicData: { minimumBookingDuration },
+        };
+        onSubmit(updatedValues);
+      }}
       onChange={onChange}
       saveActionMsg={submitButtonText}
       updated={panelUpdated}

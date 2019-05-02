@@ -17,6 +17,7 @@ import {
   EditListingPhotosPanel,
   EditListingPoliciesPanel,
   EditListingPricingPanel,
+  EditListingWhatToExpectedPanel
 } from '../../components';
 
 import css from './EditListingWizard.css';
@@ -27,6 +28,7 @@ export const FEATURES = 'features';
 export const POLICY = 'policy';
 export const LOCATION = 'location';
 export const PRICING = 'pricing';
+export const WHAT_TO_EXPECT = 'what_to_exptect';
 export const PHOTOS = 'photos';
 
 // EditListingWizardTab component supports these tabs
@@ -36,6 +38,7 @@ export const SUPPORTED_TABS = [
   POLICY,
   LOCATION,
   PRICING,
+  WHAT_TO_EXPECT,
   AVAILABILITY,
   PHOTOS,
 ];
@@ -232,6 +235,21 @@ const EditListingWizardTab = props => {
         <EditListingAvailabilityPanel
           {...panelProps(AVAILABILITY)}
           availability={availability}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
+        />
+      );
+    }
+    case WHAT_TO_EXPECT: {
+      const submitButtonTranslationKey = isNewListingFlow
+        ? 'EditListingWizard.saveNewWhatToExpect'
+        : 'EditListingWizard.saveEditWhatToExpect';
+      return (
+        <EditListingWhatToExpectedPanel
+          {...panelProps(WHAT_TO_EXPECT)}
+          intl={intl}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);

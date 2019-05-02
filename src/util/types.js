@@ -480,3 +480,8 @@ propTypes.error = shape({
 });
 
 export { propTypes };
+
+
+//Listing type
+
+export const PHOTOGRAPTHER_PROFILE = 'profile';

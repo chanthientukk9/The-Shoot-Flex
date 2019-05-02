@@ -9,7 +9,7 @@ import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { formatMoney } from '../../util/currency';
 import { types as sdkTypes } from '../../util/sdkLoader';
-import { Button, Form, FieldCurrencyInput } from '../../components';
+import { Button, Form, FieldCurrencyInput, FieldTextInput } from '../../components';
 import css from './EditListingPricingForm.css';
 
 const { Money } = sdkTypes;
@@ -54,6 +54,21 @@ export const EditListingPricingFormComponent = props => (
           id: 'EditListingPricingForm.priceRequired',
         })
       );
+
+      const minimumBookingDurationLabel = intl.formatMessage({
+        id: 'EditListingPricingForm.minimumBookingDurationLabel',
+      });
+
+      const minimumBookingDurationPlaceholder = intl.formatMessage({
+        id: 'EditListingPricingForm.minimumBookingDurationPlaceholder',
+      });
+
+      const minimumBookingDurationRequired = validators.required(
+        intl.formatMessage({
+          id: 'EditListingPricingForm.minimumBookingDurationRequired',
+        })
+      );
+
       const minPrice = new Money(config.listingMinimumPriceSubUnits, config.currency);
       const minPriceRequired = validators.moneySubUnitAmountAtLeast(
         intl.formatMessage(
@@ -88,6 +103,7 @@ export const EditListingPricingFormComponent = props => (
               <FormattedMessage id="EditListingPricingForm.showListingFailed" />
             </p>
           ) : null}
+
           <FieldCurrencyInput
             id="price"
             name="price"
@@ -97,6 +113,16 @@ export const EditListingPricingFormComponent = props => (
             placeholder={pricePlaceholderMessage}
             currencyConfig={config.currencyConfig}
             validate={priceValidators}
+          />
+
+          <FieldTextInput
+            id="minimumBookingDuration"
+            name="minimumBookingDuration"
+            className={css.minimumBookingDuration}
+            type="textarea"
+            label={minimumBookingDurationLabel}
+            placeholder={minimumBookingDurationPlaceholder}
+            validate={validators.composeValidators(minimumBookingDurationRequired)}
           />
 
           <Button

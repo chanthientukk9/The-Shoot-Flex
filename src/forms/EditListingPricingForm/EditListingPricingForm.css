@@ -21,7 +21,18 @@
 .priceInput {
   flex-shrink: 0;
   width: 100%;
+  margin-bottom: 24px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 32px;
+  }
 }
+
+.minimumBookingDuration {
+  flex-shrink: 0;
+  width: 100%;
+}
+
 
 .submitButton {
   margin-top: auto;

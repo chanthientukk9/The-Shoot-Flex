@@ -50,6 +50,11 @@ export const weekendsAvailability = [
   { key: 'unavailable', label: 'Unavailable' },
 ];
 
+export const yesNoOptions = [
+  { key: 'yes', label: 'Yes' },
+  { key: 'no', label: 'No' }
+];
+
 // Price filter configuration
 // Note: unlike most prices this is not handled in subunits
 export const priceFilterConfig = {

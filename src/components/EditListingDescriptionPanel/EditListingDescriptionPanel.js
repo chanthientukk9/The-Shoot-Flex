@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { ensureOwnListing } from '../../util/data';
 import { ListingLink } from '../../components';
-import { LISTING_STATE_DRAFT } from '../../util/types';
+import { LISTING_STATE_DRAFT, PHOTOGRAPTHER_PROFILE } from '../../util/types';
 import { EditListingDescriptionForm } from '../../forms';
 // import config from '../../config';
 
@@ -48,7 +48,11 @@ const EditListingDescriptionPanel = props => {
           const { title, description } = values;
           const updateValues = {
             title: title.trim(),
-            description };
+            description,
+            publicData: {
+              listingType: PHOTOGRAPTHER_PROFILE
+            } 
+          };
 
           onSubmit(updateValues);
         }}

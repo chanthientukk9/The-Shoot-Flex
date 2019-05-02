@@ -52,6 +52,8 @@ import SectionRulesMaybe from './SectionRulesMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import css from './ListingPage.css';
 import SectionNormalAvailabilityMaybe from './SectionNormalAvailabilityMaybe';
+import SectionMinimumBookingDurationMaybe from './SectionMinimumBookingDurationMaybe';
+import SectionWhatToExpectMaybe from './SectionWhatToExpectMaybe';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
 
@@ -181,7 +183,8 @@ export class ListingPageComponent extends Component {
       categoriesConfig,
       amenitiesConfig,
       weekdaysConfig,
-      weekendsConfig
+      weekendsConfig,
+      yesNoOptions
     } = this.props;
 
     const listingId = new UUID(rawParams.id);
@@ -421,6 +424,12 @@ export class ListingPageComponent extends Component {
                   <SectionDescriptionMaybe description={description} />
                   <SectionFeaturesMaybe options={amenitiesConfig} publicData={publicData} />
                   <SectionRulesMaybe publicData={publicData} />
+                  <SectionMinimumBookingDurationMaybe
+                    publicData={publicData} />
+                  <SectionWhatToExpectMaybe
+                    intl={intl} 
+                    yesNoOptions={yesNoOptions} 
+                    publicData={publicData} />  
                   <SectionNormalAvailabilityMaybe
                     intl={intl} 
                     weekendOptions={weekendsConfig}
@@ -485,6 +494,7 @@ ListingPageComponent.defaultProps = {
   amenitiesConfig: config.custom.amenities,
   weekdaysConfig: config.custom.weekdaysAvailability,
   weekendsConfig: config.custom.weekendsAvailability,
+  yesNoOptions: config.custom.yesNoOptions
 };
 
 ListingPageComponent.propTypes = {

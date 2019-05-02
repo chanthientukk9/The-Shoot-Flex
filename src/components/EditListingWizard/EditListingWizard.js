@@ -18,7 +18,7 @@ import EditListingWizardTab, {
   AVAILABILITY,
   DESCRIPTION,
   FEATURES,
-
+  WHAT_TO_EXPECT,
   LOCATION,
   PRICING,
   PHOTOS,
@@ -33,9 +33,9 @@ const availabilityMaybe = config.enableAvailability ? [AVAILABILITY] : [];
 export const TABS = [
   DESCRIPTION,
   FEATURES,
-
   LOCATION,
   PRICING,
+  WHAT_TO_EXPECT,
   ...availabilityMaybe,
   PHOTOS,
 ];
@@ -49,7 +49,7 @@ const tabLabel = (intl, tab) => {
     key = 'EditListingWizard.tabLabelDescription';
   } else if (tab === FEATURES) {
     key = 'EditListingWizard.tabLabelFeatures';
-  }  else if (tab === LOCATION) {
+  } else if (tab === LOCATION) {
     key = 'EditListingWizard.tabLabelLocation';
   } else if (tab === PRICING) {
     key = 'EditListingWizard.tabLabelPricing';
@@ -57,6 +57,8 @@ const tabLabel = (intl, tab) => {
     key = 'EditListingWizard.tabLabelAvailability';
   } else if (tab === PHOTOS) {
     key = 'EditListingWizard.tabLabelPhotos';
+  } else if (tab === WHAT_TO_EXPECT) {
+    key = 'EditListingWizard.tabLabelWhatToExpect';
   }
 
   return intl.formatMessage({ id: key });
@@ -86,13 +88,15 @@ const tabCompleted = (tab, listing) => {
       return !!(description && title);
     case FEATURES:
       return !!(publicData && publicData.amenities);
-    
     case LOCATION:
       return !!(geolocation && publicData && publicData.location && publicData.location.address);
     case PRICING:
       return !!price;
     case AVAILABILITY:
       return !!availabilityPlan;
+    case WHAT_TO_EXPECT:
+      return !!(publicData && publicData.sendRawImages &&
+        publicData.willEditPhotos && publicData.finalImagePerHour && publicData.expetedDeliveryDay);
     case PHOTOS:
       return images && images.length > 0;
     default:
