@@ -5,14 +5,16 @@ import { Form as FinalForm } from 'react-final-form';
 import { FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import moment from 'moment';
-import { required, bookingDatesRequired, composeValidators } from '../../util/validators';
-import { START_DATE, END_DATE } from '../../util/dates';
+import { required, bookingDateRequired, composeValidators } from '../../util/validators';
+import { DATE_OF_SHOOT, TIME_OF_SHOOT, DURATION_OF_SHOOT } from '../../util/dates';
 import { propTypes } from '../../util/types';
 import config from '../../config';
-import { Form, PrimaryButton, FieldDateRangeInput } from '../../components';
+import { Form, PrimaryButton, FieldTimeInput, FieldDateInput, FieldDurationInput } from '../../components';
 import EstimatedBreakdownMaybe from './EstimatedBreakdownMaybe';
 
 import css from './BookingDatesForm.css';
+
+const TIME_STAMP_ONE_HOUR = 60 * 60 * 1000;
 
 export class BookingDatesFormComponent extends Component {
   constructor(props) {
@@ -33,13 +35,18 @@ export class BookingDatesFormComponent extends Component {
   // focus on that input, otherwise continue with the
   // default handleSubmit function.
   handleFormSubmit(e) {
-    const { startDate, endDate } = e.bookingDates || {};
-    if (!startDate) {
-      e.preventDefault();
-      this.setState({ focusedInput: START_DATE });
-    } else if (!endDate) {
-      e.preventDefault();
-      this.setState({ focusedInput: END_DATE });
+    const { bookingDate, bookingTime, bookingDuration } = e ? e : {};
+    const bookingDateRaw = bookingDate ? bookingDate.date : null;
+
+    if (!bookingDateRaw) {
+      // e.preventDefault();
+      this.setState({ focusedInput: DATE_OF_SHOOT});
+    } else if (!bookingTime) {
+      // e.preventDefault();
+      this.setState({ focusedInput: TIME_OF_SHOOT });
+    } else if (!bookingDuration) {
+      // e.preventDefault();
+      this.setState({ focusedInput: DURATION_OF_SHOOT });
     } else {
       this.props.onSubmit(e);
     }
@@ -75,8 +82,9 @@ export class BookingDatesFormComponent extends Component {
         onSubmit={this.handleFormSubmit}
         render={fieldRenderProps => {
           const {
-            endDatePlaceholder,
-            startDatePlaceholder,
+            dateOfShootPlaceholder,
+            timeOfShootPlaceholder,
+            durationOfShootPlaceholder,
             form,
             handleSubmit,
             intl,
@@ -88,18 +96,36 @@ export class BookingDatesFormComponent extends Component {
             timeSlots,
             fetchTimeSlotsError,
           } = fieldRenderProps;
-          const { startDate, endDate } = values && values.bookingDates ? values.bookingDates : {};
 
-          const bookingStartLabel = intl.formatMessage({
-            id: 'BookingDatesForm.bookingStartTitle',
+          const { bookingDate, bookingTime, bookingDuration } = values ? values : {};
+          const bookingDateRaw = bookingDate ? bookingDate.date : null
+          const validInput = !!bookingDateRaw && !!bookingTime && !!bookingDuration;
+          const bookingDurationFiltered = validInput ? config.custom.durationSlotList.filter(item => item.key === bookingDuration)[0] : null;
+          const bookingDurationNum = bookingDurationFiltered ? bookingDurationFiltered : null;
+          let startDate = new Date(bookingDateRaw);
+          const bookingTimeFiltered = validInput ? config.custom.timeSlotList.filter(item => item.key === bookingTime)[0] : null;
+          const selectedTime = bookingTimeFiltered ? bookingTimeFiltered : null;
+          const timeStampDuration = bookingDurationNum ? bookingDurationNum.duration * TIME_STAMP_ONE_HOUR : null;
+          selectedTime ? startDate.setHours(selectedTime.hour) : null;
+          selectedTime ? startDate.setMinutes(selectedTime.minute) : null;
+          startDate = selectedTime ? startDate.getTime() : null;
+          let endDate = selectedTime ? startDate + timeStampDuration : null;
+
+          const bookingDateLabel = intl.formatMessage({
+            id: "BookingDatesForm.bookingDateLabel"
           });
-          const bookingEndLabel = intl.formatMessage({ id: 'BookingDatesForm.bookingEndTitle' });
+
+          const bookingTimeLabel = intl.formatMessage({
+            id: "BookingDatesForm.bookingTimeLabel"
+          });
+
+          const bookingDurationLabel = intl.formatMessage({
+            id: "BookingDatesForm.bookingDurationLabel"
+          });
+
           const requiredMessage = intl.formatMessage({ id: 'BookingDatesForm.requiredDate' });
-          const startDateErrorMessage = intl.formatMessage({
-            id: 'FieldDateRangeInput.invalidStartDate',
-          });
-          const endDateErrorMessage = intl.formatMessage({
-            id: 'FieldDateRangeInput.invalidEndDate',
+          const dateOfShootErrorMessage = intl.formatMessage({
+            id: 'FieldDateInput.invalidDate',
           });
           const timeSlotsError = fetchTimeSlotsError ? (
             <p className={css.timeSlotsError}>
@@ -111,17 +137,17 @@ export class BookingDatesFormComponent extends Component {
           // EstimatedBreakdownMaybe component to change the calculations
           // for customized payment processes.
           const bookingData =
-            startDate && endDate
+            !!startDate && !!endDate
               ? {
-                  unitType,
-                  unitPrice,
-                  startDate,
-                  endDate,
+                unitType,
+                unitPrice,
+                startDate,
+                endDate,
 
-                  // NOTE: If unitType is `line-item/units`, a new picker
-                  // for the quantity should be added to the form.
-                  quantity: 1,
-                }
+                // NOTE: If unitType is `line-item/units`, a new picker
+                // for the quantity should be added to the form.
+                quantity: 1,
+              }
               : null;
           const bookingInfo = bookingData ? (
             <div className={css.priceBreakdownContainer}>
@@ -138,42 +164,68 @@ export class BookingDatesFormComponent extends Component {
             day: 'numeric',
           };
 
+          const timeFormatOptions = {
+            hour: 'numeric',
+            minute: '2-digit',
+          };
+
           const now = moment();
           const today = now.startOf('day').toDate();
           const tomorrow = now
             .startOf('day')
             .add(1, 'days')
             .toDate();
-          const startDatePlaceholderText =
-            startDatePlaceholder || intl.formatDate(today, dateFormatOptions);
-          const endDatePlaceholderText =
-            endDatePlaceholder || intl.formatDate(tomorrow, dateFormatOptions);
+          const dateOfShootPlaceholderText = dateOfShootPlaceholder || intl.formatDate(today, dateFormatOptions);
+          const timeOfShootPlaceholderText = timeOfShootPlaceholder || intl.formatTime(today, timeFormatOptions);
+          const durationOfShootPlaceholderText = durationOfShootPlaceholder || intl.formatMessage({ id: "BookingDateForms.durationOfShootPlaceholderText" });
           const submitButtonClasses = classNames(
             submitButtonWrapperClassName || css.submitButtonWrapper
           );
 
+          console.log({haha: this.state.focusedInput});
+
           return (
             <Form onSubmit={handleSubmit} className={classes}>
               {timeSlotsError}
-              <FieldDateRangeInput
-                className={css.bookingDates}
-                name="bookingDates"
-                unitType={unitType}
-                startDateId={`${form}.bookingStartDate`}
-                startDateLabel={bookingStartLabel}
-                startDatePlaceholderText={startDatePlaceholderText}
-                endDateId={`${form}.bookingEndDate`}
-                endDateLabel={bookingEndLabel}
-                endDatePlaceholderText={endDatePlaceholderText}
-                focusedInput={this.state.focusedInput}
-                onFocusedInputChange={this.onFocusedInputChange}
-                format={null}
-                timeSlots={timeSlots}
-                useMobileMargins
+              <div className={css.dateTimeOfShootContainer}>
+                <FieldDateInput
+                  className={css.bookingDate}
+                  id={`${form}.bookingDate`}
+                  name="bookingDate"
+                  label={bookingDateLabel}
+                  useMobileMargins={false}
+                  focused={this.state.focusedInput}
+                  onFocusChange={this.onFocusedInputChange}
+                  format={null}
+                  timeSlots={timeSlots}
+                  placeholderText={dateOfShootPlaceholderText}
+                  validate={composeValidators(
+                    required(requiredMessage),
+                    bookingDateRequired(dateOfShootErrorMessage)
+                  )}
+                />
+                <FieldTimeInput
+                  className={css.bookingTime}
+                  id={`${form}.bookingTime`}
+                  name="bookingTime"
+                  label={bookingTimeLabel}
+                  placeholderText={timeOfShootPlaceholderText.replace(" AM", "")}
+                  validate={composeValidators(
+                    required(requiredMessage)
+                  )}
+                  form={form}
+                />
+              </div>
+              <FieldDurationInput
+                className={css.bookingDuration}
+                id={`${form}.bookingDuration`}
+                name="bookingDuration"
+                label={bookingDurationLabel}
+                placeholderText={durationOfShootPlaceholderText}
                 validate={composeValidators(
-                  required(requiredMessage),
-                  bookingDatesRequired(startDateErrorMessage, endDateErrorMessage)
+                  required(requiredMessage)
                 )}
+                form={form}
               />
               {bookingInfo}
               <p className={css.smallPrint}>

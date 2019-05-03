@@ -13,6 +13,49 @@
   z-index: 1;
 }
 
+.dateTimeOfShootContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.bookingDate {
+  flex-shrink: 0;
+  margin-bottom: 38px;
+  flex-basis: 100%;
+
+  /* Ensure that calendar dropdown gets some stacking context relative to other form items below */
+  z-index: 2;
+
+  @media (--viewportMedium) {
+    flex-basis: 46%;
+  }
+}
+
+.bookingTime {
+  flex-shrink: 1;
+  margin-bottom: 38px;
+  flex-basis: 100%;
+
+  /* Ensure that calendar dropdown gets some stacking context relative to other form items below */
+
+  @media (--viewportMedium) {
+    flex-basis: 46%;
+  }
+}
+
+.bookingDuration {
+  flex-shrink: 0;
+  margin-bottom: 38px;
+  flex-basis: 100%;
+
+  /* Ensure that calendar dropdown gets some stacking context relative to other form items below */
+
+  @media (--viewportMedium) {
+    flex-basis: 100%;
+  }
+}
+
 .priceBreakdownContainer {
   padding: 0 24px;
   margin-bottom: 40px;
