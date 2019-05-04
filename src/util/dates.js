@@ -5,6 +5,9 @@ import moment from 'moment';
  */
 export const START_DATE = 'startDate';
 export const END_DATE = 'endDate';
+export const DATE_OF_SHOOT = 'dateOfShoot';
+export const TIME_OF_SHOOT = 'timeOfShoot';
+export const DURATION_OF_SHOOT = 'durationOfShoot';
 
 /**
  * Check that the given parameter is a Date object.

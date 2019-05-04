@@ -56,6 +56,7 @@ import SectionMinimumBookingDurationMaybe from './SectionMinimumBookingDurationM
 import SectionWhatToExpectMaybe from './SectionWhatToExpectMaybe';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
+const TIME_STAMP_ONE_HOUR = 60 * 60 * 1000;
 
 const { UUID } = sdkTypes;
 
@@ -97,14 +98,29 @@ export class ListingPageComponent extends Component {
     const listingId = new UUID(params.id);
     const listing = getListing(listingId);
 
-    const { bookingDates, ...bookingData } = values;
+    const { bookingDate, bookingTime, bookingDuration, ...bookingData } = values ? values : {};
+    const bookingDateRaw = bookingDate ? bookingDate.date : null
+    const validInput = !!bookingDateRaw && !!bookingTime && !!bookingDuration;
+    if (!validInput) {
+      return
+    }
+    const bookingDurationFiltered = validInput ? config.custom.durationSlotList.filter(item => item.key === bookingDuration)[0] : null;
+    const bookingDurationNum = bookingDurationFiltered ? bookingDurationFiltered : null;
+    let startDate = new Date(bookingDateRaw);
+    const bookingTimeFiltered = validInput ? config.custom.timeSlotList.filter(item => item.key === bookingTime)[0] : null;
+    const selectedTime = bookingTimeFiltered ? bookingTimeFiltered : null;
+    const timeStampDuration = bookingDurationNum ? bookingDurationNum.duration * TIME_STAMP_ONE_HOUR : null;
+    selectedTime ? startDate.setHours(selectedTime.hour) : null;
+    selectedTime ? startDate.setMinutes(selectedTime.minute) : null;
+    startDate = selectedTime ? startDate.getTime() : null;
+    let endDate = selectedTime ? startDate + timeStampDuration : null;
 
     const initialValues = {
       listing,
       bookingData,
       bookingDates: {
-        bookingStart: bookingDates.startDate,
-        bookingEnd: bookingDates.endDate,
+        bookingStart: startDate,
+        bookingEnd: endDate,
       },
     };
 
