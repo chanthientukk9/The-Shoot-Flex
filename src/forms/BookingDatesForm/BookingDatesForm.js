@@ -19,9 +19,10 @@ const TIME_STAMP_ONE_HOUR = 60 * 60 * 1000;
 export class BookingDatesFormComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { focusedInput: null };
+    this.state = { focusedInput: null, focusedInputName: null };
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.onFocusedInputChange = this.onFocusedInputChange.bind(this);
+    this.onFocusedInputNameChange = this.onFocusedInputNameChange.bind(this);
   }
 
   // Function that can be passed to nested components
@@ -29,6 +30,10 @@ export class BookingDatesFormComponent extends Component {
   // focused input changes.
   onFocusedInputChange(focusedInput) {
     this.setState({ focusedInput });
+  }
+
+  onFocusedInputNameChange(focusedInputName) {
+    this.setState({ focusedInputName });
   }
 
   // In case start or end date for the booking is missing
@@ -182,20 +187,21 @@ export class BookingDatesFormComponent extends Component {
             submitButtonWrapperClassName || css.submitButtonWrapper
           );
 
-          console.log({haha: this.state.focusedInput});
+          console.log({haha: this.state.focusedInput, kaka: this.state.focusedInputName});
 
           return (
             <Form onSubmit={handleSubmit} className={classes}>
               {timeSlotsError}
               <div className={css.dateTimeOfShootContainer}>
                 <FieldDateInput
-                  className={css.bookingDate}
+                  className={classNames(css.bookingDate, this.state.focusedInputName === TIME_OF_SHOOT ? css.fullBookingItemBox : css.null)}
                   id={`${form}.bookingDate`}
                   name="bookingDate"
                   label={bookingDateLabel}
                   useMobileMargins={false}
                   focused={this.state.focusedInput}
                   onFocusChange={this.onFocusedInputChange}
+                  onFocusNameChange={this.onFocusedInputNameChange}
                   format={null}
                   timeSlots={timeSlots}
                   placeholderText={dateOfShootPlaceholderText}
@@ -205,10 +211,12 @@ export class BookingDatesFormComponent extends Component {
                   )}
                 />
                 <FieldTimeInput
-                  className={css.bookingTime}
+                  className={classNames(css.bookingTime, this.state.focusedInput ? css.fullBookingItemBox : css.null)}
                   id={`${form}.bookingTime`}
                   name="bookingTime"
                   label={bookingTimeLabel}
+                  // focused={this.state.focusedInputName}
+                  onFocusChange={this.onFocusedInputNameChange}
                   placeholderText={timeOfShootPlaceholderText.replace(" AM", "")}
                   validate={composeValidators(
                     required(requiredMessage)
@@ -221,6 +229,8 @@ export class BookingDatesFormComponent extends Component {
                 id={`${form}.bookingDuration`}
                 name="bookingDuration"
                 label={bookingDurationLabel}
+                // focused={this.state.focusedInputName}
+                onFocusChange={this.onFocusedInputNameChange}
                 placeholderText={durationOfShootPlaceholderText}
                 validate={composeValidators(
                   required(requiredMessage)

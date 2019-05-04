@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { string } from 'prop-types';
 import classNames from 'classnames';
 import config from '../../config';
+import { DURATION_OF_SHOOT } from '../../util/dates';
 
 import css from './DurationInput.css';
 
@@ -54,6 +55,7 @@ class DurationInput extends Component {
       onBlur,
       onFocus,
       value,
+      onFocusChange,
       ...rest
     } = this.props;
 
@@ -76,10 +78,12 @@ class DurationInput extends Component {
             onBlur={(e) => {
               onBlur(e);
               this.handleCloseDurationPanel();
+              onFocusChange(null);
             }}
             onFocus={(e) => {
               onFocus(e);
               this.handleOpenDurationPanel();
+              onFocusChange(DURATION_OF_SHOOT);
             }}
           />
           {this.state.isOpenTimePanel &&

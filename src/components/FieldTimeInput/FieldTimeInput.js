@@ -27,6 +27,8 @@ class FieldTimeInputComponent extends Component {
     } = this.props;
     /* eslint-enable no-unused-vars */
 
+    console.log('asasas', {this: this.props})
+
     if (label && !id) {
       throw new Error('id required when a label is given');
     }
