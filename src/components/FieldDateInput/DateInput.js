@@ -137,6 +137,7 @@ class DateInputComponent extends Component {
     // SingleDatePicker requires 'onFocusChange' function and 'focused' boolean
     // but Fields of React-Form deals with onFocus & onBlur instead
     this.setState({ focused });
+    this.props.onFocusChange({focusedInput: focused})
 
     if (focused) {
       this.props.onFocus();

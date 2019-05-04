@@ -23,6 +23,7 @@ class FieldTimeInputComponent extends Component {
       input,
       meta,
       onUnmount,
+      handleGetBookingDateTimeError,
       ...rest
     } = this.props;
     /* eslint-enable no-unused-vars */
@@ -51,12 +52,19 @@ class FieldTimeInputComponent extends Component {
       });
     const inputProps = { inputClassName: inputClasses, id, type, ...input, ...rest };
 
+    const errorComp = (<ValidationError fieldMeta={meta} />);
+    
+    if (touched && error) {
+      handleGetBookingDateTimeError(errorComp, 'bookingTime')
+    } else {
+      handleGetBookingDateTimeError(null, 'bookingTime')
+    }
+
     const classes = classNames(rootClassName || css.root, className);
     return (
       <div className={classes}>
         {label ? <label htmlFor={id}>{label}</label> : null}
         <TimeInput {...inputProps}/>
-        <ValidationError fieldMeta={fieldMeta} />
       </div>
     );
   }

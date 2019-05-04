@@ -55,7 +55,7 @@
     background: none;
 
     @media (--viewportMedium) {
-      padding: 4px 0 9px 0;
+      padding: 4px 0 10px 0;
       border-bottom-width: 3px;
     }
   }

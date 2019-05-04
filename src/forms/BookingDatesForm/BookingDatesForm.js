@@ -19,7 +19,11 @@ const TIME_STAMP_ONE_HOUR = 60 * 60 * 1000;
 export class BookingDatesFormComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { focusedInput: null, focusedInputName: null };
+    this.state = {
+      focusedInput: null,
+      focusedInputName: null,
+      bookingDateTimeError: null
+    };
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.onFocusedInputChange = this.onFocusedInputChange.bind(this);
     this.onFocusedInputNameChange = this.onFocusedInputNameChange.bind(this);
@@ -28,7 +32,7 @@ export class BookingDatesFormComponent extends Component {
   // Function that can be passed to nested components
   // so that they can notify this component when the
   // focused input changes.
-  onFocusedInputChange(focusedInput) {
+  onFocusedInputChange({ focusedInput }) {
     this.setState({ focusedInput });
   }
 
@@ -45,7 +49,7 @@ export class BookingDatesFormComponent extends Component {
 
     if (!bookingDateRaw) {
       // e.preventDefault();
-      this.setState({ focusedInput: DATE_OF_SHOOT});
+      this.setState({ focusedInput: DATE_OF_SHOOT });
     } else if (!bookingTime) {
       // e.preventDefault();
       this.setState({ focusedInput: TIME_OF_SHOOT });
@@ -54,6 +58,29 @@ export class BookingDatesFormComponent extends Component {
       this.setState({ focusedInput: DURATION_OF_SHOOT });
     } else {
       this.props.onSubmit(e);
+    }
+  }
+
+  handleGetBookingDateTimeError = (errorComponent, type) => {
+    let bookingDateTimeError = { ...this.state.bookingDateTimeError };
+    if (errorComponent) {
+      if (bookingDateTimeError[type]) {
+        return;
+      } else {
+        bookingDateTimeError[type] = errorComponent;
+        this.setState({
+          bookingDateTimeError: { ...bookingDateTimeError }
+        })
+      }
+    } else {
+      if (bookingDateTimeError[type]) {
+        delete bookingDateTimeError[type];
+        this.setState({
+          bookingDateTimeError: { ...bookingDateTimeError }
+        })
+      } else {
+        return;
+      }
     }
   }
 
@@ -128,7 +155,9 @@ export class BookingDatesFormComponent extends Component {
             id: "BookingDatesForm.bookingDurationLabel"
           });
 
-          const requiredMessage = intl.formatMessage({ id: 'BookingDatesForm.requiredDate' });
+          const requiredDateMessage = intl.formatMessage({ id: 'BookingDatesForm.requiredDate' });
+          const requiredTimeMessage = intl.formatMessage({ id: 'BookingDatesForm.requiredTime' });
+          const requiredDurationMessage = intl.formatMessage({ id: 'BookingDatesForm.requiredDuration' });
           const dateOfShootErrorMessage = intl.formatMessage({
             id: 'FieldDateInput.invalidDate',
           });
@@ -187,42 +216,46 @@ export class BookingDatesFormComponent extends Component {
             submitButtonWrapperClassName || css.submitButtonWrapper
           );
 
-          console.log({haha: this.state.focusedInput, kaka: this.state.focusedInputName});
-
           return (
             <Form onSubmit={handleSubmit} className={classes}>
               {timeSlotsError}
               <div className={css.dateTimeOfShootContainer}>
                 <FieldDateInput
-                  className={classNames(css.bookingDate, this.state.focusedInputName === TIME_OF_SHOOT ? css.fullBookingItemBox : css.null)}
+                  className={classNames(css.bookingDate, this.state.focusedInput || this.state.focusedInputName === TIME_OF_SHOOT ? css.fullBookingItemBox : css.null)}
                   id={`${form}.bookingDate`}
                   name="bookingDate"
                   label={bookingDateLabel}
                   useMobileMargins={false}
                   focused={this.state.focusedInput}
                   onFocusChange={this.onFocusedInputChange}
-                  onFocusNameChange={this.onFocusedInputNameChange}
                   format={null}
                   timeSlots={timeSlots}
                   placeholderText={dateOfShootPlaceholderText}
+                  handleGetBookingDateTimeError={this.handleGetBookingDateTimeError}
                   validate={composeValidators(
-                    required(requiredMessage),
+                    required(requiredDateMessage),
                     bookingDateRequired(dateOfShootErrorMessage)
                   )}
                 />
                 <FieldTimeInput
-                  className={classNames(css.bookingTime, this.state.focusedInput ? css.fullBookingItemBox : css.null)}
+                  className={classNames(css.bookingTime)}
                   id={`${form}.bookingTime`}
                   name="bookingTime"
                   label={bookingTimeLabel}
                   // focused={this.state.focusedInputName}
                   onFocusChange={this.onFocusedInputNameChange}
                   placeholderText={timeOfShootPlaceholderText.replace(" AM", "")}
+                  handleGetBookingDateTimeError={this.handleGetBookingDateTimeError}
                   validate={composeValidators(
-                    required(requiredMessage)
+                    required(requiredTimeMessage)
                   )}
                   form={form}
                 />
+                <div className={css.errorWrapper}>
+                  {this.state.bookingDateTimeError && Object.entries(this.state.bookingDateTimeError).length > 0 &&
+                    Object.entries(this.state.bookingDateTimeError).map(item => item[1])[0]
+                  }
+                </div>
               </div>
               <FieldDurationInput
                 className={css.bookingDuration}
@@ -233,7 +266,7 @@ export class BookingDatesFormComponent extends Component {
                 onFocusChange={this.onFocusedInputNameChange}
                 placeholderText={durationOfShootPlaceholderText}
                 validate={composeValidators(
-                  required(requiredMessage)
+                  required(requiredDurationMessage)
                 )}
                 form={form}
               />

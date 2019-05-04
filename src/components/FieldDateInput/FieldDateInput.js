@@ -26,6 +26,7 @@ class FieldDateInputComponent extends Component {
       input,
       meta,
       useMobileMargins,
+      handleGetBookingDateTimeError,
       ...rest
     } = this.props;
 
@@ -60,6 +61,14 @@ class FieldDateInputComponent extends Component {
     const classes = classNames(rootClassName || css.fieldRoot, className);
     const errorClasses = classNames({ [css.mobileMargins]: useMobileMargins });
 
+    const errorComp = (<ValidationError className={errorClasses} fieldMeta={meta} />);
+    
+    if (touched && error) {
+      handleGetBookingDateTimeError(errorComp, 'bookingDate')
+    } else {
+      handleGetBookingDateTimeError(null, 'bookingDate')
+    }
+
     return (
       <div className={classes}>
         {label ? (
@@ -68,7 +77,6 @@ class FieldDateInputComponent extends Component {
           </label>
         ) : null}
         <DateInput className={inputClasses} {...inputProps} />
-        <ValidationError className={errorClasses} fieldMeta={meta} />
       </div>
     );
   }

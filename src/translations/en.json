@@ -69,6 +69,8 @@
   "BookingDatesForm.priceBreakdownTitle": "Booking breakdown",
   "BookingDatesForm.requestToBook": "Request to book",
   "BookingDatesForm.requiredDate": "Oops, make sure your date is correct!",
+  "BookingDatesForm.requiredTime": "Oops, make sure your time is correct!",
+  "BookingDatesForm.requiredDuration": "Oops, make sure your duration is correct!",
   "BookingDatesForm.timeSlotsError": "Loading listing availability failed. Please refresh the page.",
   "BookingDatesForm.ContactPhotographerFirst": "To ensure a smooth booking process, we recommend you contact the photographer to discuss date/time and duration before you request a booking",
   "BookingDatesForm.youWontBeChargedInfo": "You won't be charged yet",
